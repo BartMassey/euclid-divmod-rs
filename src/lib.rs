@@ -5,7 +5,7 @@ use num::{
 };
 use thiserror::Error;
 
-fn divmod_euclid_naive(n: f32, d: f32) -> (f32, f32) {
+fn divmod_euclid_deff(n: f32, d: f32) -> (f32, f32) {
     let q = if d > 0.0 {
         // Division should round toward negative infinity to
         // avoid double-rounding.
@@ -73,7 +73,7 @@ pub enum DivModError {
 
 pub fn get_op(name: &str) -> Result<D, DivModError> {
     match name {
-        "naive" => Ok(divmod_euclid_naive),
+        "deff" => Ok(divmod_euclid_deff),
         "std" => Ok(divmod_euclid_std),
         "exactish" => Ok(divmod_euclid_exactish),
         "exact" => Ok(divmod_euclid_exact),
