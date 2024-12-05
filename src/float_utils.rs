@@ -24,7 +24,7 @@ impl Floaty for f32 {
     }
 }
 
-pub struct DisplayFloat<T: Floaty>(T);
+pub struct DisplayFloat<T: Floaty>(pub T);
 
 impl<T: Floaty> std::fmt::Display for DisplayFloat<T> {
     fn fmt(&self, ff: &mut std::fmt::Formatter) -> std::fmt::Result {

@@ -1,6 +1,6 @@
 use clap::Parser;
 
-extern crate edm;
+use edm::float_utils::*;
 
 #[derive(Parser)]
 struct Args {
@@ -24,7 +24,7 @@ fn report(op: edm::D, n: f32, d: f32, quiet: bool) {
     let in_range = r >= 0.0 && r < d.abs();
     let output = !quiet || !reconstructed || !in_range;
     if output {
-        print!("{} {} → {} {}", n, d, q, r);
+        print!("{} {} → {} {}", n, d, DisplayFloat(q), DisplayFloat(r));
     }
     if !reconstructed {
         print!(" ({}×{}+{}≠{}, d={})", q, d, r, n, n - q * d + r);
