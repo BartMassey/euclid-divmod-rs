@@ -1,3 +1,5 @@
+pub mod float_utils;
+
 use num::{
     rational::BigRational as Q,
     traits::identities::zero,
