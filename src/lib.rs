@@ -36,7 +36,12 @@ fn divmod_euclid_rational(n0: f32, d0: f32, exact: bool) -> (f32, f32) {
     assert!(d0 != 0.0);
     let n = Q::from_float(n0).unwrap();
     let d = Q::from_float(d0).unwrap();
-    let q = (&n / &d).floor();
+    let q = &n / &d;
+    let q = if d < zero() {
+        q.ceil()
+    } else {
+        q.floor()
+    };
     // XXX This is almost certainly always the case, but worth
     // checking since currently undocumented.
     assert!(q.denom() >= &zero());
@@ -75,7 +80,12 @@ fn divmod_euclid_prop(n0: f32, d0: f32) -> (f32, f32) {
             ne += 1;
             de += 1;
             eprintln!("n={nf} {ne} d={df} {de}");
-            // Fix sign bits.
+            // Fix sign bits and adjust for division.
+            // XXX Sign bit fix is currently wrong; need to
+            // switch between floor() and ceil().
+            // XXX Adjustment is also currently wrong; need
+            // to deal with very negative exponents, so shift
+            // farther left everywhere.
             let sign = (nf ^ df) >> 24;
             let nf = (nf & !(1 << 24)) << (24 + ne);
             let df = (df & !(1 << 24)) << (24 + de);
