@@ -35,7 +35,7 @@ fn divmod_euclid_rational(n0: f32, d0: f32, exact: bool) -> (f32, f32) {
     assert!(d0 != 0.0);
     let n = Q::from_float(n0).unwrap();
     let d = Q::from_float(d0).unwrap();
-    let q = &n / &d;
+    let q = (&n / &d).floor();
     // XXX This is almost certainly always the case, but worth
     // checking since currently undocumented.
     assert!(q.denom() >= &zero());
@@ -69,7 +69,7 @@ pub type D = fn(f32, f32) -> (f32, f32);
 
 #[derive(Debug, Error)]
 pub enum DivModError {
-    #[error("unknown divmod $0")]
+    #[error("unknown divmod {0}")]
     Unknown(String),
 }
 
