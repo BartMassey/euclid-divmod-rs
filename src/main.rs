@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use edm::float_utils::*;
+use edm::float_utils::DisplayFloat as DF;
 
 #[derive(Parser)]
 struct Args {
@@ -27,19 +27,17 @@ fn report(op: edm::D, n: f32, d: f32, quiet: bool, df: bool) {
     let output = !quiet || !reconstructed || !in_range;
     if output {
         if df {
-            print!(
-                "{} {} → {} {}",
-                DisplayFloat(n),
-                DisplayFloat(d),
-                DisplayFloat(q),
-                DisplayFloat(r),
-            );
+            print!("{} {} → {} {}", DF(n), DF(d), DF(q), DF(r));
         } else {
             print!("{} {} → {} {}", n, d, q, r);
         }
     }
     if !reconstructed {
-        print!(" ({}×{}+{}≠{}, Δ={})", q, d, r, n, n - q * d + r);
+        if df {
+            print!(" ({}×{}+{}≠{}, Δ={})", DF(q), DF(d), DF(r), DF(n), DF(n - q * d + r));
+        } else {
+            print!(" ({}×{}+{}≠{}, Δ={})", q, d, r, n, n - q * d + r);
+        }
     }
     if !in_range {
         let delta = if r < 0.0 {
@@ -47,7 +45,11 @@ fn report(op: edm::D, n: f32, d: f32, quiet: bool, df: bool) {
         } else {
             r - d
         };
-        print!(" ({}∉[0..{}), Δ={})", r, d.abs(), delta);
+        if df {
+            print!(" ({}∉[0..{}), Δ={})", DF(r), DF(d.abs()), DF(delta));
+        } else {
+            print!(" ({}∉[0..{}), Δ={})", r, d.abs(), delta);
+        }
     }
     if output {
         println!();

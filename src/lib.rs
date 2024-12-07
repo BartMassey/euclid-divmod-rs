@@ -45,11 +45,15 @@ fn divmod_euclid_rational(n0: f32, d0: f32, exact: bool) -> (f32, f32) {
     // XXX This is almost certainly always the case, but worth
     // checking since currently undocumented.
     assert!(q.denom() >= &zero());
-    let r = n - &q * d;
+    let r = n - &q * &d;
     let to_f32: Box<dyn Fn(&Q) -> f32> = if exact {
         let to_f32 = |x: &Q| {
-            let frac = Q::from_integer(u32::pow(2, 24).into());
-            let rounded = (x * &frac).floor() / &frac;
+            let frac = Q::from_integer((1 << 24).into());
+            let rounded = if d < zero() {
+                (x * &frac).ceil() / &frac
+            } else {
+                (x * &frac).floor() / &frac
+            };
             rounded.to_f32().unwrap()
         };
         Box::new(to_f32)
