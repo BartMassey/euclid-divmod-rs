@@ -22,7 +22,8 @@ fn fail(e: Box<dyn std::error::Error>) -> ! {
 
 fn report(op: edm::D, n: f32, d: f32, quiet: bool, df: bool) {
     let (q, r) = op(n, d);
-    let reconstructed = q * d + r == n;
+    let reconstruction = f32::mul_add(q, d, r);
+    let reconstructed = reconstruction == n;
     let in_range = r >= 0.0 && r < d.abs();
     let output = !quiet || !reconstructed || !in_range;
     if output {
@@ -34,9 +35,9 @@ fn report(op: edm::D, n: f32, d: f32, quiet: bool, df: bool) {
     }
     if !reconstructed {
         if df {
-            print!(" ({}×{}+{}≠{}, Δ={})", DF(q), DF(d), DF(r), DF(n), DF(n - q * d + r));
+            print!(" ({}×{}+{}≠{}, Δ={})", DF(q), DF(d), DF(r), DF(n), DF(n - reconstruction));
         } else {
-            print!(" ({}×{}+{}≠{}, Δ={})", q, d, r, n, n - q * d + r);
+            print!(" ({}×{}+{}≠{}, Δ={})", q, d, r, n, n - reconstruction);
         }
     }
     if !in_range {
